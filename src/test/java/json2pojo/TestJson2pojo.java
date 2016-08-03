@@ -14,12 +14,17 @@ import org.junit.Test;
 
 import com.json2pojo.Generator;
 import com.json2pojo.exceptions.InvalidJSONException;
+import com.json2pojo.utils.ReflectionUtils;
 
 public class TestJson2pojo {
 
 	private String json;
 	
 	private String jsonSchema;
+	
+	private String validUrl;
+	
+	private String invalidUrl;
 	
 	private String className;
 	
@@ -49,6 +54,10 @@ public class TestJson2pojo {
 		in = this.getClass().getResourceAsStream("/testschema.json");
 		
 		jsonSchema = IOUtils.toString(in, "UTF-8");
+		
+		validUrl = "https://api.twitter.com/1.1/search/tweets.json";
+		
+		invalidUrl = "https://@twitter.com/1.1/search/tweets.json";
 		
 		className = "Person";
 		
@@ -91,6 +100,24 @@ public class TestJson2pojo {
 		File file = new File(baseDir + packageName.replace(".", "/"));
 
 		Assert.assertTrue( ArrayUtils.contains(file.list() , "Person.java") && ArrayUtils.contains(file.list() , "PhoneNumber.java") );
+		
+	}
+	
+	@Test
+	public void shoudValidateUrl() {
+		
+		boolean isUrl = (boolean) ReflectionUtils.execute(generator, "isUrl", validUrl);
+		
+		Assert.assertTrue(isUrl);
+		
+	}
+	
+	@Test
+	public void shoudInvalidateUrl() {
+		
+		boolean isUrl = (boolean) ReflectionUtils.execute(generator, "isUrl", invalidUrl);
+		
+		Assert.assertFalse(isUrl);
 		
 	}
 	

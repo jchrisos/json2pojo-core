@@ -1,6 +1,8 @@
 package com.json2pojo;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
@@ -15,11 +17,15 @@ import com.sun.codemodel.JCodeModel;
 
 public class Generator {
 
+	private static final String URL_PATTERN = "^http(s{0,1})://[a-zA-Z0-9_/\\-\\.]+\\.([A-Za-z/]{2,5})[a-zA-Z0-9_/\\&\\?\\=\\-\\.\\~\\%]*";
+	
 	public void generateFiles(String json, String className, String baseDir, String packageName, String sourceType, boolean generateBuilders, boolean includeToString, boolean includeHashcodeAndEquals, boolean includeConstructors) throws InvalidJSONException {
 		
 		if (json == null || json.trim().length() == 0) {
 			throw new InvalidJSONException();
 		}
+		
+		
 		
 		try {
 			
@@ -41,6 +47,14 @@ public class Generator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+	}
+	
+	private boolean isUrl(String content) {
+		
+		Matcher matcher = Pattern.compile(URL_PATTERN).matcher(content);
+		
+		return matcher.matches();
 		
 	}
 	
