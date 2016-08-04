@@ -21,8 +21,6 @@ public class TestJson2pojo {
 
 	private String json;
 	
-	private String jsonSchema;
-	
 	private String validUrl;
 	
 	private String invalidUrl;
@@ -34,8 +32,6 @@ public class TestJson2pojo {
 	private String baseDir;
 	
 	private Generator generator;
-	
-	private String sourceType;
 	
 	private boolean generateBuilders;
 	
@@ -52,21 +48,15 @@ public class TestJson2pojo {
 		
 		json = IOUtils.toString(in, "UTF-8");
 		
-		in = this.getClass().getResourceAsStream("/testschema.json");
-		
-		jsonSchema = IOUtils.toString(in, "UTF-8");
-		
 		validUrl = "https://api.twitter.com/1.1/search/tweets.json";
 		
 		invalidUrl = "https://@twitter.com/1.1/search/tweets.json";
 		
-		className = "Person";
+		className = "Main";
 		
 		baseDir = "/Users/juliochrisostomo/Desktop/";
 
 		packageName = "com.examples";
-		
-		sourceType = "JSON";
 		
 		generateBuilders = true;
 		
@@ -77,30 +67,30 @@ public class TestJson2pojo {
 	@Test(expected = InvalidContentException.class)
 	public void shouldThrowsAnInvalidJSONException() throws InvalidContentException {
 		
-		generator.generateFiles(null, className, baseDir, packageName, sourceType, generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
-		generator.generateFiles("", className, baseDir, packageName, sourceType, generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
+		generator.generateFiles(null, className, baseDir, packageName, generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
+		generator.generateFiles("", className, baseDir, packageName, generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
 		
 	}
 	
 	@Test
 	public void shouldGeneratePOJOsFromJSON() throws InvalidContentException {
 		
-		generator.generateFiles(json, className, baseDir, packageName, sourceType, generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
+		generator.generateFiles(json, className, baseDir, packageName, generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
 		
 		File file = new File(baseDir + packageName.replace(".", "/"));
 
-		Assert.assertTrue( ArrayUtils.contains(file.list() , "Person.java") && ArrayUtils.contains(file.list() , "PhoneNumber.java") );
+		Assert.assertTrue( ArrayUtils.contains(file.list() , "Main.java") && ArrayUtils.contains(file.list() , "PhoneNumber.java") );
 		
 	}
 	
 	@Test
-	public void shouldGeneratePOJOsFromJSONSchema() throws InvalidContentException {
+	public void shouldGeneratePOJOsFromUrl() throws InvalidContentException {
 		
-		generator.generateFiles(jsonSchema, className, baseDir, packageName, "JSONSCHEMA", generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
+		generator.generateFiles(validUrl, className, baseDir, packageName, generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
 		
 		File file = new File(baseDir + packageName.replace(".", "/"));
 
-		Assert.assertTrue( ArrayUtils.contains(file.list() , "Person.java") && ArrayUtils.contains(file.list() , "PhoneNumber.java") );
+		Assert.assertTrue( ArrayUtils.contains(file.list() , "Main.java") );
 		
 	}
 	

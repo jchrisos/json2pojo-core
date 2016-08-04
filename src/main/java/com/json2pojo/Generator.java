@@ -25,7 +25,7 @@ public class Generator {
 
 	private static final String URL_PATTERN = "^http(s{0,1})://[a-zA-Z0-9_/\\-\\.]+\\.([A-Za-z/]{2,5})[a-zA-Z0-9_/\\&\\?\\=\\-\\.\\~\\%]*";
 	
-	public void generateFiles(String content, String className, String baseDir, String packageName, String sourceType, boolean generateBuilders, boolean includeToString, boolean includeHashcodeAndEquals, boolean includeConstructors) throws InvalidContentException {
+	public void generateFiles(String content, String className, String baseDir, String packageName, boolean generateBuilders, boolean includeToString, boolean includeHashcodeAndEquals, boolean includeConstructors) throws InvalidContentException {
 		
 		if (content == null || content.trim().length() == 0) {
 			throw new InvalidContentException();
@@ -38,7 +38,7 @@ public class Generator {
 			}
 			
 			CustomGenerationConfig config = new CustomGenerationConfig()
-					.withSourceType(SourceType.valueOf(sourceType))
+					.withSourceType(SourceType.JSON)
 					.withBuilders(generateBuilders)
 					.withConstructors(includeConstructors)
 					.withHashcodeAndEquals(includeHashcodeAndEquals)
