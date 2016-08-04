@@ -12,8 +12,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gson.Gson;
 import com.json2pojo.Generator;
-import com.json2pojo.exceptions.InvalidJSONException;
+import com.json2pojo.exceptions.InvalidContentException;
 import com.json2pojo.utils.ReflectionUtils;
 
 public class TestJson2pojo {
@@ -73,8 +74,8 @@ public class TestJson2pojo {
 
 	}
 
-	@Test(expected = InvalidJSONException.class)
-	public void shouldThrowsAnInvalidJSONException() throws InvalidJSONException {
+	@Test(expected = InvalidContentException.class)
+	public void shouldThrowsAnInvalidJSONException() throws InvalidContentException {
 		
 		generator.generateFiles(null, className, baseDir, packageName, sourceType, generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
 		generator.generateFiles("", className, baseDir, packageName, sourceType, generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
@@ -82,7 +83,7 @@ public class TestJson2pojo {
 	}
 	
 	@Test
-	public void shouldGeneratePOJOsFromJSON() throws InvalidJSONException {
+	public void shouldGeneratePOJOsFromJSON() throws InvalidContentException {
 		
 		generator.generateFiles(json, className, baseDir, packageName, sourceType, generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
 		
@@ -93,7 +94,7 @@ public class TestJson2pojo {
 	}
 	
 	@Test
-	public void shouldGeneratePOJOsFromJSONSchema() throws InvalidJSONException {
+	public void shouldGeneratePOJOsFromJSONSchema() throws InvalidContentException {
 		
 		generator.generateFiles(jsonSchema, className, baseDir, packageName, "JSONSCHEMA", generateBuilders, includeToString, includeHashcodeAndEquals, includeConstructors);
 		
@@ -104,7 +105,7 @@ public class TestJson2pojo {
 	}
 	
 	@Test
-	public void shoudValidateUrl() {
+	public void shouldValidateUrl() {
 		
 		boolean isUrl = (boolean) ReflectionUtils.execute(generator, "isUrl", validUrl);
 		
@@ -113,11 +114,21 @@ public class TestJson2pojo {
 	}
 	
 	@Test
-	public void shoudInvalidateUrl() {
+	public void shouldInvalidateUrl() {
 		
 		boolean isUrl = (boolean) ReflectionUtils.execute(generator, "isUrl", invalidUrl);
 		
 		Assert.assertFalse(isUrl);
+		
+	}
+	
+	@Test
+	public void shouldGetJsonFromUrl() {
+		
+		String json = (String) ReflectionUtils.execute(generator, "getJsonFromUrl", validUrl);
+		
+		Object obj = new Gson().fromJson(json, Object.class);
+		Assert.assertTrue(obj != null);
 		
 	}
 	
